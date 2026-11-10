@@ -77,16 +77,19 @@ class ClockConfigActivity : Activity() {
 
     private fun refresh(q: String) {
         val query = q.trim().replace(' ', '_').lowercase()
-        shown = allIds.filter { query.isEmpty() || it.lowercase().contains(query) }
+        shown = allIds.filter {
+            query.isEmpty() || it.lowercase().contains(query) ||
+                (it == "Europe/Madrid" && "barcelona".contains(query))
+        }
         val now = Instant.now()
         val items = shown.map { id ->
             val off = try {
-                val o = ZoneId.of(id).rules.getOffset(now)
+                val o = ClockWidget.resolveZone(id).rules.getOffset(now)
                 if (o.totalSeconds == 0) "UTC" else "UTC" + o.id
             } catch (e: Exception) {
                 ""
             }
-            id.replace('_', ' ') + "   (" + off + ")"
+            (if (id == "Europe/Madrid") "Barcelona" else id.replace('_', ' ')) + "   (" + off + ")"
         }
         adapter.clear()
         adapter.addAll(items)

@@ -62,16 +62,22 @@ class ClockWidget : AppWidgetProvider() {
             for (id in mgr.getAppWidgetIds(ComponentName(context, ClockWidget::class.java))) update(context, mgr, id)
         }
 
-        fun zoneLabel(zoneId: String): String =
-            if (zoneId == "UTC" || zoneId == "GMT") zoneId else zoneId.substringAfterLast('/').replace('_', ' ')
+        /** "Barcelona" és la mateixa hora que Madrid (Europe/Madrid), però amb el nom que volem veure. */
+        fun resolveZone(id: String): ZoneId = try {
+            ZoneId.of(if (id == "Barcelona") "Europe/Madrid" else id)
+        } catch (e: Exception) {
+            ZoneId.of("UTC")
+        }
+
+        fun zoneLabel(zoneId: String): String = when (zoneId) {
+            "UTC", "GMT" -> zoneId
+            "Europe/Madrid" -> "Barcelona" // mateixa hora, però aquí no posem "Madrid"
+            else -> zoneId.substringAfterLast('/').replace('_', ' ')
+        }
 
         fun update(context: Context, mgr: AppWidgetManager, id: Int) {
             val zoneId = Prefs.getZone(context, id)
-            val zone = try {
-                ZoneId.of(zoneId)
-            } catch (e: Exception) {
-                ZoneId.of("UTC")
-            }
+            val zone = resolveZone(zoneId)
             val (w, h) = WidgetUtil.sizePx(context, mgr.getAppWidgetOptions(id), 150, 150, 700_000)
             val size = min(w, h)
             val bmp = ClockRenderer.render(size, zone, zoneLabel(zoneId))

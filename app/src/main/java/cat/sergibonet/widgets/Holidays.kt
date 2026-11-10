@@ -4,8 +4,12 @@ import android.content.Context
 import org.json.JSONArray
 import java.time.LocalDate
 
-/** STATE = estatal (vermell), CATALONIA = Catalunya (blau), LOCAL = municipal (verd). */
-enum class Level { STATE, CATALONIA, LOCAL }
+/**
+ * STATE = estatal, CATALONIA = Catalunya, CAPITAL = Barcelona (capital),
+ * LOCAL = festa local. Cada versió té el seu holidays.json (app/src/main/assets
+ * per a Sergi, app/src/lluis/assets per al Lluís).
+ */
+enum class Level { STATE, CATALONIA, CAPITAL, LOCAL }
 
 data class Holiday(
     val date: LocalDate,
@@ -33,6 +37,7 @@ object Holidays {
             val level = when (o.getString("level")) {
                 "state" -> Level.STATE
                 "catalonia" -> Level.CATALONIA
+                "capital" -> Level.CAPITAL
                 else -> Level.LOCAL
             }
             val place = o.optString("place", "").takeIf { it.isNotEmpty() }
@@ -51,7 +56,7 @@ object Holidays {
         return map
     }
 
-    /** Si un dia en té diversos, mana l'estatal, després el català, després el local. */
+    /** Si un dia en té diversos, mana l'estatal, després el català, la capital i al final el local. */
     fun strongest(list: List<Holiday>?): Holiday? = list?.minByOrNull { it.level.ordinal }
 
     /** Els primers [limit] dies festius entre [from] i [to] (tots dos inclosos), un festiu per dia. */

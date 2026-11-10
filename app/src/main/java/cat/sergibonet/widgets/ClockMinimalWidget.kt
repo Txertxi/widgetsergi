@@ -65,11 +65,7 @@ class ClockMinimalWidget : AppWidgetProvider() {
 
         fun update(context: Context, mgr: AppWidgetManager, id: Int) {
             val zoneId = Prefs.getZone(context, id)
-            val zone = try {
-                ZoneId.of(zoneId)
-            } catch (e: Exception) {
-                ZoneId.of("UTC")
-            }
+            val zone = ClockWidget.resolveZone(zoneId)
             val (w, h) = WidgetUtil.sizePx(context, mgr.getAppWidgetOptions(id), 150, 150, 700_000)
             val bmp = ClockMinimalRenderer.render(min(w, h), zone)
 

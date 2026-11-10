@@ -4,4 +4,5 @@
     <string name="widget_calendar_name">Calendari (català)</string>
     <string name="widget_clock_name">Rellotge GMT</string>
     <string name="widget_clock_min_name">Rellotge GMT minimal</string>
+    <string name="holiday_legend">Colors dels festius: vermell = Estat, blau = Catalunya, lila = Barcelona (capital), verd = local (Tarragona i Reus). Un * indica data provisional.</string>
 </resources>

@@ -35,11 +35,13 @@ object CalendarRenderer {
     // Colors dels festius
     private val C_STATE = 0xFFFF5A5F.toInt()      // estatal
     private val C_CATALONIA = 0xFF4FC3F7.toInt()  // Catalunya
+    private val C_CAPITAL = 0xFFC792FF.toInt()    // capital (Barcelona)
     private val C_LOCAL = 0xFF6EE7A0.toInt()      // local
 
     fun levelColor(l: Level): Int = when (l) {
         Level.STATE -> C_STATE
         Level.CATALONIA -> C_CATALONIA
+        Level.CAPITAL -> C_CAPITAL
         Level.LOCAL -> C_LOCAL
     }
 

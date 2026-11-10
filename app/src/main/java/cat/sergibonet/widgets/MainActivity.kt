@@ -20,8 +20,7 @@ class MainActivity : Activity() {
             "mantén premut el widget i toca \"Reconfigura\" (segons el llançador).\n\n" +
             "Calendari: toca ‹ o › per canviar de mes, el títol per tornar al mes actual " +
             "i la resta per obrir el calendari.\n\n" +
-            "Colors dels festius: vermell = Estat, blau = Catalunya, verd = local " +
-            "(Barcelona, Tarragona, Reus, Salou). Un * indica data provisional."
+            getString(R.string.holiday_legend)
         val sv = ScrollView(this)
         sv.addView(tv)
         setContentView(sv)

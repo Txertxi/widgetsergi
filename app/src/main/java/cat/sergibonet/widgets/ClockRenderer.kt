@@ -25,7 +25,7 @@ object ClockRenderer {
     private val WHITE = 0xFFF2F2F2.toInt()
     private val GREY = 0xFF8E8E93.toInt()
 
-    private const val BRAND = "Federicu"
+    private const val BRAND = "FWCo" // Federicu Watch Company
 
     /** Radi de les cantonades del widget (sobre 400). Abans 92; més petit = cantonades més quadrades. */
     private const val CORNER = 24f
@@ -140,9 +140,10 @@ object ClockRenderer {
 
         val brand = Paint(Paint.ANTI_ALIAS_FLAG)
         brand.textAlign = Paint.Align.CENTER
-        brand.typeface = Typeface.create("serif", Typeface.ITALIC)
-        brand.textSize = 19f
-        brand.letterSpacing = 0.03f
+        brand.typeface = Typeface.create("serif", Typeface.NORMAL)
+        brand.textSize = 25f
+        brand.textScaleX = 0.78f   // serif allargada, sobria
+        brand.letterSpacing = 0.14f
         brand.color = 0xFFC4C4C9.toInt()
         c.drawText(BRAND, 200f, 282f, brand)
 
