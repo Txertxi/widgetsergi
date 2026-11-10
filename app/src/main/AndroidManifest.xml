@@ -27,6 +27,11 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".TickJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <receiver
             android:name=".CalendarWidget"
             android:exported="true"

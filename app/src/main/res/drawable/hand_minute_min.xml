@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Segment recte, sense punxa -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="400dp"
     android:height="400dp"
@@ -8,5 +9,5 @@
         android:fillColor="#F2F2F2"
         android:strokeColor="#000000"
         android:strokeWidth="1"
-        android:pathData="M196.5,216 L200,50 L203.5,216 Z" />
+        android:pathData="M197,216 L197,56 L203,56 L203,216 Z" />
 </vector>

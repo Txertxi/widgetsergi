@@ -14,8 +14,8 @@ import kotlin.math.sin
 
 /**
  * Dibuixa la capa de fons del rellotge GMT (tot en coordenades 0..400):
- * bisell de 24 h (nit/dia), índexs, finestreta de data i l'agulla GMT.
- * Les agulles d'hores, minuts i segons les posa AnalogClock a sobre.
+ * números de 24 h amb un cercle fi nit/dia per fora, índexs, finestreta de data,
+ * marca i agulla GMT. Les agulles d'hores, minuts i segons les posa AnalogClock a sobre.
  */
 object ClockRenderer {
     private val TILE = 0xFF0B0B0D.toInt()
@@ -24,6 +24,8 @@ object ClockRenderer {
     private val AMBER = 0xFFFFB020.toInt()
     private val WHITE = 0xFFF2F2F2.toInt()
     private val GREY = 0xFF8E8E93.toInt()
+
+    private const val BRAND = "Federicu"
 
     fun render(size: Int, zone: ZoneId, label: String): Bitmap {
         val bmp = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
@@ -35,26 +37,24 @@ object ClockRenderer {
         p.color = TILE
         c.drawRoundRect(RectF(0f, 0f, 400f, 400f), 92f, 92f, p)
 
-        // Bisell de 24 h: meitat superior = nit (blau), inferior = dia (vermell)
-        val outer = RectF(10f, 10f, 390f, 390f)
-        p.color = NIGHT
-        c.drawArc(outer, 180f, 180f, true, p)
-        p.color = DAY
-        c.drawArc(outer, 0f, 180f, true, p)
-        p.color = TILE
-        c.drawCircle(200f, 200f, 152f, p)
-        // petites separacions entre nit i dia
+        // Cercle fi per FORA dels números: meitat superior = nit (blau), inferior = dia (vermell)
+        val ring = Paint(Paint.ANTI_ALIAS_FLAG)
+        ring.style = Paint.Style.STROKE
+        ring.strokeWidth = 7f
+        val outer = RectF(12f, 12f, 388f, 388f)
+        ring.color = NIGHT
+        c.drawArc(outer, 181f, 178f, false, ring)
+        ring.color = DAY
+        c.drawArc(outer, 1f, 178f, false, ring)
+
+        // Anell fi interior (límit de l'esfera)
         p.style = Paint.Style.STROKE
-        p.strokeWidth = 2.5f
-        c.drawLine(10f, 200f, 48f, 200f, p)
-        c.drawLine(352f, 200f, 390f, 200f, p)
-        // anell fi interior
-        p.color = 0xFF5A5A5E.toInt()
         p.strokeWidth = 1.5f
+        p.color = 0xFF5A5A5E.toInt()
         c.drawCircle(200f, 200f, 152f, p)
         p.style = Paint.Style.FILL
 
-        // Números del bisell (24 a dalt, 12 a baix) i punts per les hores senars
+        // Números de 24 h (24 a dalt, 12 a baix) i punts per les hores senars
         val nums = Paint(Paint.ANTI_ALIAS_FLAG)
         nums.color = WHITE
         nums.textSize = 21f
@@ -66,8 +66,8 @@ object ClockRenderer {
         dot.color = WHITE
         for (h in 0 until 24) {
             val a = Math.toRadians(h * 15.0)
-            val x = (200.0 + 171.0 * sin(a)).toFloat()
-            val y = (200.0 - 171.0 * cos(a)).toFloat()
+            val x = (200.0 + 170.0 * sin(a)).toFloat()
+            val y = (200.0 - 170.0 * cos(a)).toFloat()
             if (h % 2 == 0) {
                 c.drawText(if (h == 0) "24" else h.toString(), x, y + dy, nums)
             } else {
@@ -109,32 +109,41 @@ object ClockRenderer {
             c.restore()
         }
 
-        // Finestreta de la data (a les 3)
-        val win = RectF(268f, 184f, 328f, 216f)
-        p.color = 0xFFF4F4F2.toInt()
-        c.drawRoundRect(win, 4f, 4f, p)
+        // Finestreta de la data (a les 3): fons negre, marc blanc fi, xifres blanques, estreta
+        val win = RectF(279f, 185f, 317f, 215f)
+        p.color = 0xFF000000.toInt()
+        c.drawRoundRect(win, 3f, 3f, p)
+        p.style = Paint.Style.STROKE
+        p.strokeWidth = 1.8f
+        p.color = WHITE
+        c.drawRoundRect(win, 3f, 3f, p)
+        p.style = Paint.Style.FILL
         val day = Paint(Paint.ANTI_ALIAS_FLAG)
-        day.color = 0xFF111111.toInt()
-        day.textSize = 25f
+        day.color = WHITE
+        day.textSize = 23f
         day.typeface = Typeface.create("sans-serif-medium", Typeface.BOLD)
         day.textAlign = Paint.Align.CENTER
         val dfm = day.fontMetrics
         c.drawText(LocalDate.now().dayOfMonth.toString(), win.centerX(), win.centerY() - (dfm.ascent + dfm.descent) / 2f, day)
 
-        // Textos: zona de l'agulla GMT (ambre) i "GMT" a baix
+        // Textos: zona de l'agulla GMT (ambre) a dalt i la marca a baix
         val t = Paint(Paint.ANTI_ALIAS_FLAG)
         t.textAlign = Paint.Align.CENTER
         t.typeface = Typeface.create("sans-serif-medium", Typeface.BOLD)
         t.letterSpacing = 0.08f
         t.textSize = 17f
         t.color = AMBER
-        val shown = label.uppercase().take(13)
-        c.drawText(shown, 200f, 138f, t)
-        t.textSize = 15f
-        t.color = GREY
-        c.drawText("GMT", 200f, 282f, t)
+        c.drawText(label.uppercase().take(13), 200f, 138f, t)
 
-        // Agulla GMT (24 h): una volta cada 24 h, apunta al bisell
+        val brand = Paint(Paint.ANTI_ALIAS_FLAG)
+        brand.textAlign = Paint.Align.CENTER
+        brand.typeface = Typeface.create("serif", Typeface.ITALIC)
+        brand.textSize = 19f
+        brand.letterSpacing = 0.03f
+        brand.color = 0xFFC4C4C9.toInt()
+        c.drawText(BRAND, 200f, 282f, brand)
+
+        // Agulla GMT (24 h): una volta cada 24 h, apunta als números
         val z = ZonedDateTime.now(zone)
         val angle = (z.hour + z.minute / 60f) / 24f * 360f
         c.save()

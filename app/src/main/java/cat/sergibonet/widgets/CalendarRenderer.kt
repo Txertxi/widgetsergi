@@ -89,34 +89,26 @@ object CalendarRenderer {
         wd.textAlign = Paint.Align.LEFT
         c.drawText(DAYS[today.dayOfWeek.value - 1].replaceFirstChar { it.uppercase() }, lx, H * 0.665f, wd)
 
-        val todays = Holidays.strongest(holidays[today])
-        val infoText: String
-        val infoColor: Int
-        if (todays != null) {
-            infoText = "Avui: " + todays.label()
-            infoColor = levelColor(todays.level)
-        } else {
-            val n = Holidays.next(holidays, today.plusDays(1))
-            if (n != null) {
-                infoText = "${n.date.dayOfMonth} ${MON3[n.date.monthValue - 1].lowercase()} · ${n.label()}"
-                infoColor = levelColor(n.level)
-            } else {
-                infoText = "Cap festiu proper"
-                infoColor = GREY
-            }
-        }
+        // Els 2 propers festius dins d'un mes (cadascun en una sola línia, retallat si no hi cap)
+        val upcoming = Holidays.upcoming(holidays, today, today.plusMonths(1), 2)
         val tp = TextPaint(Paint.ANTI_ALIAS_FLAG)
-        tp.color = infoColor
         tp.textSize = H * 0.07f
         tp.typeface = medium()
-        val layout = StaticLayout.Builder.obtain(infoText, 0, infoText.length, tp, lw.toInt())
-            .setMaxLines(2)
-            .setEllipsize(TextUtils.TruncateAt.END)
-            .build()
-        c.save()
-        c.translate(lx, H * 0.72f)
-        layout.draw(c)
-        c.restore()
+        if (upcoming.isEmpty()) {
+            tp.color = GREY
+            c.drawText("Cap festiu en un mes", lx, H * 0.80f, tp)
+        } else {
+            for ((i, hol) in upcoming.withIndex()) {
+                val text = if (hol.date == today) {
+                    "Avui: " + hol.label()
+                } else {
+                    "${hol.date.dayOfMonth} ${MON3[hol.date.monthValue - 1].lowercase()} · ${hol.label()}"
+                }
+                tp.color = levelColor(hol.level)
+                val fitted = TextUtils.ellipsize(text, tp, lw, TextUtils.TruncateAt.END).toString()
+                c.drawText(fitted, lx, H * (0.80f + 0.10f * i), tp)
+            }
+        }
 
         // ---------- Costat dret: mes
         val ym = YearMonth.from(today).plusMonths(monthOffset.toLong())

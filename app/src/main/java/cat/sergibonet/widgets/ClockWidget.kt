@@ -57,6 +57,11 @@ class ClockWidget : AppWidgetProvider() {
     }
 
     companion object {
+        fun updateAll(context: Context) {
+            val mgr = AppWidgetManager.getInstance(context)
+            for (id in mgr.getAppWidgetIds(ComponentName(context, ClockWidget::class.java))) update(context, mgr, id)
+        }
+
         fun zoneLabel(zoneId: String): String =
             if (zoneId == "UTC" || zoneId == "GMT") zoneId else zoneId.substringAfterLast('/').replace('_', ' ')
 

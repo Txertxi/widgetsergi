@@ -58,6 +58,11 @@ class ClockMinimalWidget : AppWidgetProvider() {
     }
 
     companion object {
+        fun updateAll(context: Context) {
+            val mgr = AppWidgetManager.getInstance(context)
+            for (id in mgr.getAppWidgetIds(ComponentName(context, ClockMinimalWidget::class.java))) update(context, mgr, id)
+        }
+
         fun update(context: Context, mgr: AppWidgetManager, id: Int) {
             val zoneId = Prefs.getZone(context, id)
             val zone = try {

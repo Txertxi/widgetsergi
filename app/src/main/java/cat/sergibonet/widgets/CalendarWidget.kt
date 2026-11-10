@@ -69,6 +69,11 @@ class CalendarWidget : AppWidgetProvider() {
     }
 
     companion object {
+        fun updateAll(context: Context) {
+            val mgr = AppWidgetManager.getInstance(context)
+            for (id in mgr.getAppWidgetIds(ComponentName(context, CalendarWidget::class.java))) update(context, mgr, id)
+        }
+
         const val ACTION_PREV = "cat.sergibonet.widgets.CAL_PREV"
         const val ACTION_NEXT = "cat.sergibonet.widgets.CAL_NEXT"
         const val ACTION_RESET = "cat.sergibonet.widgets.CAL_RESET"

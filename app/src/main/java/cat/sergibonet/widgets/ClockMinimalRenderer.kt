@@ -60,16 +60,6 @@ object ClockMinimalRenderer {
             }
         }
 
-        // Punts d'hora (12): una mica més grans als quarts
-        val dot = Paint(Paint.ANTI_ALIAS_FLAG)
-        dot.color = WHITE
-        for (i in 0 until 12) {
-            val a = Math.toRadians(i * 30.0)
-            val x = (200.0 + 126.0 * sin(a)).toFloat()
-            val y = (200.0 - 126.0 * cos(a)).toFloat()
-            c.drawCircle(x, y, if (i % 3 == 0) 6.5f else 4.2f, dot)
-        }
-
         // Agulla GMT (24 h), fina i amb punta de fletxa
         val z = ZonedDateTime.now(zone)
         val angle = (z.hour + z.minute / 60f) / 24f * 360f

@@ -54,6 +54,13 @@ object Holidays {
     /** Si un dia en té diversos, mana l'estatal, després el català, després el local. */
     fun strongest(list: List<Holiday>?): Holiday? = list?.minByOrNull { it.level.ordinal }
 
+    /** Els primers [limit] dies festius entre [from] i [to] (tots dos inclosos), un festiu per dia. */
+    fun upcoming(map: Map<LocalDate, List<Holiday>>, from: LocalDate, to: LocalDate, limit: Int): List<Holiday> =
+        map.keys.filter { !it.isBefore(from) && !it.isAfter(to) }
+            .sorted()
+            .take(limit)
+            .mapNotNull { strongest(map[it]) }
+
     /** Primer festiu a partir de [from] (inclòs). */
     fun next(map: Map<LocalDate, List<Holiday>>, from: LocalDate): Holiday? {
         val d = map.keys.filter { !it.isBefore(from) }.minOrNull() ?: return null
