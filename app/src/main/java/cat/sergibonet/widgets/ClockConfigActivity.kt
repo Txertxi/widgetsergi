@@ -95,7 +95,13 @@ class ClockConfigActivity : Activity() {
 
     private fun choose(zoneId: String) {
         Prefs.setZone(this, widgetId, zoneId)
-        ClockWidget.update(this, AppWidgetManager.getInstance(this), widgetId)
+        val mgr = AppWidgetManager.getInstance(this)
+        val provider = mgr.getAppWidgetInfo(widgetId)?.provider?.className
+        if (provider == ClockMinimalWidget::class.java.name) {
+            ClockMinimalWidget.update(this, mgr, widgetId)
+        } else {
+            ClockWidget.update(this, mgr, widgetId)
+        }
         setResult(RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId))
         finish()
     }
