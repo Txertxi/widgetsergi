@@ -1,0 +1,198 @@
+[
+ {
+  "date": "2026-01-01",
+  "name": "Cap d'Any",
+  "level": "state"
+ },
+ {
+  "date": "2026-01-06",
+  "name": "Reis",
+  "level": "state"
+ },
+ {
+  "date": "2026-02-06",
+  "name": "Festa local",
+  "level": "local",
+  "place": "Salou"
+ },
+ {
+  "date": "2026-04-03",
+  "name": "Divendres Sant",
+  "level": "state"
+ },
+ {
+  "date": "2026-04-06",
+  "name": "Dilluns de Pasqua",
+  "level": "catalonia"
+ },
+ {
+  "date": "2026-05-01",
+  "name": "Festa del Treball",
+  "level": "state"
+ },
+ {
+  "date": "2026-05-25",
+  "name": "Dilluns de Pasqua Granada",
+  "level": "local",
+  "place": "Barcelona"
+ },
+ {
+  "date": "2026-06-24",
+  "name": "Sant Joan",
+  "level": "catalonia"
+ },
+ {
+  "date": "2026-06-29",
+  "name": "Sant Pere",
+  "level": "local",
+  "place": "Reus"
+ },
+ {
+  "date": "2026-08-15",
+  "name": "L'Assumpció",
+  "level": "state"
+ },
+ {
+  "date": "2026-08-19",
+  "name": "Sant Magí",
+  "level": "local",
+  "place": "Tarragona"
+ },
+ {
+  "date": "2026-09-11",
+  "name": "Diada Nacional de Catalunya",
+  "level": "catalonia"
+ },
+ {
+  "date": "2026-09-23",
+  "name": "Santa Tecla",
+  "level": "local",
+  "place": "Tarragona"
+ },
+ {
+  "date": "2026-09-24",
+  "name": "La Mercè",
+  "level": "local",
+  "place": "Barcelona"
+ },
+ {
+  "date": "2026-09-25",
+  "name": "Festa local",
+  "level": "local",
+  "place": "Reus"
+ },
+ {
+  "date": "2026-10-12",
+  "name": "Festa Nacional d'Espanya",
+  "level": "state"
+ },
+ {
+  "date": "2026-10-30",
+  "name": "Festa local",
+  "level": "local",
+  "place": "Salou"
+ },
+ {
+  "date": "2026-12-08",
+  "name": "La Immaculada",
+  "level": "state"
+ },
+ {
+  "date": "2026-12-25",
+  "name": "Nadal",
+  "level": "state"
+ },
+ {
+  "date": "2026-12-26",
+  "name": "Sant Esteve",
+  "level": "catalonia"
+ },
+ {
+  "date": "2027-01-01",
+  "name": "Cap d'Any",
+  "level": "state"
+ },
+ {
+  "date": "2027-01-06",
+  "name": "Reis",
+  "level": "state"
+ },
+ {
+  "date": "2027-01-29",
+  "name": "Festa local",
+  "level": "local",
+  "place": "Salou",
+  "provisional": true
+ },
+ {
+  "date": "2027-03-26",
+  "name": "Divendres Sant",
+  "level": "state"
+ },
+ {
+  "date": "2027-03-29",
+  "name": "Dilluns de Pasqua",
+  "level": "catalonia"
+ },
+ {
+  "date": "2027-05-01",
+  "name": "Festa del Treball",
+  "level": "state"
+ },
+ {
+  "date": "2027-05-17",
+  "name": "Dilluns de Pasqua Granada",
+  "level": "local",
+  "place": "Barcelona",
+  "provisional": true
+ },
+ {
+  "date": "2027-06-24",
+  "name": "Sant Joan",
+  "level": "catalonia"
+ },
+ {
+  "date": "2027-09-11",
+  "name": "Diada Nacional de Catalunya",
+  "level": "catalonia"
+ },
+ {
+  "date": "2027-09-24",
+  "name": "La Mercè",
+  "level": "local",
+  "place": "Barcelona",
+  "provisional": true
+ },
+ {
+  "date": "2027-10-12",
+  "name": "Festa Nacional d'Espanya",
+  "level": "state"
+ },
+ {
+  "date": "2027-10-30",
+  "name": "Festa local",
+  "level": "local",
+  "place": "Salou",
+  "provisional": true
+ },
+ {
+  "date": "2027-11-01",
+  "name": "Tots Sants",
+  "level": "state"
+ },
+ {
+  "date": "2027-12-06",
+  "name": "Dia de la Constitució",
+  "level": "state"
+ },
+ {
+  "date": "2027-12-08",
+  "name": "La Immaculada",
+  "level": "state"
+ },
+ {
+  "date": "2027-12-25",
+  "name": "Nadal",
+  "level": "state"
+ }
+]

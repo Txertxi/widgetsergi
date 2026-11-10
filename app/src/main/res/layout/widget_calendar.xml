@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- La imatge (bitmap) la dibuixa CalendarRenderer. Les "zones" són botons
+     transparents amb les mateixes proporcions que el dibuix:
+     capçalera (0-16 % d'alçada) = ‹ títol ›, i la resta obre el calendari. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/cal_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/zone_left"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="16"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:id="@+id/zone_prev"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="16" />
+
+                <FrameLayout
+                    android:id="@+id/zone_title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="68" />
+
+                <FrameLayout
+                    android:id="@+id/zone_next"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="16" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/zone_body"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="84" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

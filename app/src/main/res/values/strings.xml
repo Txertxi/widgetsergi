@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Widgets Sergi</string>
+    <string name="widget_calendar_name">Calendari (català)</string>
+    <string name="widget_clock_name">Rellotge GMT</string>
+</resources>
