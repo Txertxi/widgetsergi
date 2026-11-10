@@ -71,7 +71,7 @@ object CalendarRenderer {
 
         // Targeta
         fill.color = BG
-        val cr = minOf(W, H) * 0.14f
+        val cr = minOf(W, H) * 0.05f // radi de les cantonades (abans 0.14)
         c.drawRoundRect(RectF(0f, 0f, W, H), cr, cr, fill)
 
         // ---------- Costat esquerre: "flip" mes + dia, dia de la setmana, festiu

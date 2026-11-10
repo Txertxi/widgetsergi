@@ -27,6 +27,9 @@ object ClockRenderer {
 
     private const val BRAND = "Federicu"
 
+    /** Radi de les cantonades del widget (sobre 400). Abans 92; més petit = cantonades més quadrades. */
+    private const val CORNER = 24f
+
     fun render(size: Int, zone: ZoneId, label: String): Bitmap {
         val bmp = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val c = Canvas(bmp)
@@ -35,7 +38,7 @@ object ClockRenderer {
 
         // Fons
         p.color = TILE
-        c.drawRoundRect(RectF(0f, 0f, 400f, 400f), 92f, 92f, p)
+        c.drawRoundRect(RectF(0f, 0f, 400f, 400f), CORNER, CORNER, p)
 
         // Cercle fi per FORA dels números: meitat superior = nit (blau), inferior = dia (vermell)
         val ring = Paint(Paint.ANTI_ALIAS_FLAG)

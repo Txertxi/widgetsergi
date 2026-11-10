@@ -22,6 +22,9 @@ object ClockMinimalRenderer {
     private val WHITE = 0xFFF2F2F2.toInt()
     private val NUM = 0xFFC9C9CE.toInt()
 
+    /** Radi de les cantonades del widget (sobre 400). Abans 92. */
+    private const val CORNER = 24f
+
     fun render(size: Int, zone: ZoneId): Bitmap {
         val bmp = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val c = Canvas(bmp)
@@ -30,7 +33,7 @@ object ClockMinimalRenderer {
 
         // Fons
         p.color = TILE
-        c.drawRoundRect(RectF(0f, 0f, 400f, 400f), 92f, 92f, p)
+        c.drawRoundRect(RectF(0f, 0f, 400f, 400f), CORNER, CORNER, p)
 
         // Anell fi
         p.style = Paint.Style.STROKE
