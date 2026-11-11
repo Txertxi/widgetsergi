@@ -7,34 +7,62 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import java.time.LocalDate
 import java.time.ZoneId
 
 /**
- * Refresc dels widgets amb DUES vies independents (redundància):
+ * Refresc dels widgets amb TRES vies independents (redundància):
  * 1) alarma inexacta cada 5 min (rellotges) o a mitjanit (calendari);
- * 2) tasca periòdica del sistema (JobScheduler) cada 15 min, que refresca tots els widgets.
+ * 2) alarma EXACTA a les 00:00:00 perquè el canvi de dia sigui puntual;
+ * 3) tasca periòdica del sistema (JobScheduler) cada 15 min, que refresca tots els widgets.
+ *
+ * Totes les alarmes arriben a l'acció TICK de cada widget, que l'actualitza i
+ * torna a programar les alarmes (scheduleAt programa també la de mitjanit).
  */
 object Scheduler {
     const val ACTION_TICK = "cat.sergibonet.widgets.TICK"
     private const val JOB_ID = 4201
+    private val FLAGS = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
     private fun pending(ctx: Context, cls: Class<*>): PendingIntent {
         val i = Intent(ctx, cls).setAction(ACTION_TICK)
-        return PendingIntent.getBroadcast(
-            ctx, 0, i, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
+        return PendingIntent.getBroadcast(ctx, 0, i, FLAGS)
+    }
+
+    /** Alarma de mitjanit: mateixa acció, però un PendingIntent propi (codi 1) per no trepitjar l'altra. */
+    private fun pendingMidnight(ctx: Context, cls: Class<*>): PendingIntent {
+        val i = Intent(ctx, cls).setAction(ACTION_TICK)
+        return PendingIntent.getBroadcast(ctx, 1, i, FLAGS)
     }
 
     fun scheduleAt(ctx: Context, cls: Class<*>, atMillis: Long) {
         val am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         am.setAndAllowWhileIdle(AlarmManager.RTC, atMillis, pending(ctx, cls))
+        scheduleMidnightExact(ctx, cls)
         ensureJob(ctx)
+    }
+
+    /** Alarma exacta (que desperta el mòbil) a les 00:00:00 del dia següent. */
+    private fun scheduleMidnightExact(ctx: Context, cls: Class<*>) {
+        val am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val at = nextMidnight()
+        val pi = pendingMidnight(ctx, cls)
+        try {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || am.canScheduleExactAlarms()) {
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pi)
+            } else {
+                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pi)
+            }
+        } catch (e: SecurityException) {
+            am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pi)
+        }
     }
 
     fun cancel(ctx: Context, cls: Class<*>) {
         val am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         am.cancel(pending(ctx, cls))
+        am.cancel(pendingMidnight(ctx, cls))
     }
 
     /** Tasca periòdica de seguretat: si les alarmes fallen, aquesta continua refrescant. */
@@ -52,8 +80,9 @@ object Scheduler {
         }
     }
 
+    /** 00:00:00,2 del dia següent (0,2 s de marge perquè LocalDate.now() ja sigui el dia nou). */
     fun nextMidnight(): Long =
-        LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() + 2000L
+        LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() + 200L
 
     /** Cada 5 minuts: l'agulla GMT es mou 1,25° en 5 min (imperceptible). */
     fun nextFiveMinutes(): Long {
