@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.Typeface
+import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -16,6 +17,11 @@ import kotlin.math.sin
  * Dibuixa la capa de fons del rellotge GMT (tot en coordenades 0..400):
  * números de 24 h amb un cercle fi nit/dia per fora, índexs, finestreta de data,
  * marca i agulla GMT. Les agulles d'hores, minuts i segons les posa AnalogClock a sobre.
+ *
+ * Com un GMT de debò: l'agulla taronja marca l'HORA LOCAL en 24 h sobre una esfera fixa
+ * i invisible (24 a dalt, 12 a baix). L'esfera visible (números, punts i cercle
+ * blau/vermell) és la que gira segons la diferència amb la segona zona: llegint on
+ * apunta l'agulla sobre els números es veu l'hora de l'altra zona.
  */
 object ClockRenderer {
     private val TILE = 0xFF0B0B0D.toInt()
@@ -40,7 +46,20 @@ object ClockRenderer {
         p.color = TILE
         c.drawRoundRect(RectF(0f, 0f, 400f, 400f), CORNER, CORNER, p)
 
-        // Cercle fi per FORA dels números: meitat superior = nit (blau), inferior = dia (vermell)
+        // Hora local i gir de l'esfera visible. La diferència (segona zona - local) ve dels
+        // desplaçaments actuals (així compta l'horari d'estiu) i pot ser fraccionària (p. ex. l'Índia).
+        // Una zona 1 h per davant fa girar l'esfera 15° en sentit antihorari.
+        val nowInstant = Instant.now()
+        val localZone = ZoneId.systemDefault()
+        val local = ZonedDateTime.ofInstant(nowInstant, localZone)
+        val diffSeconds = zone.rules.getOffset(nowInstant).totalSeconds -
+            localZone.rules.getOffset(nowInstant).totalSeconds
+        val dialRot = -diffSeconds / 3600f * 15f
+
+        // Cercle fi per FORA dels números: meitat superior = nit (blau), inferior = dia (vermell).
+        // Forma part de l'esfera giratòria.
+        c.save()
+        c.rotate(dialRot, 200f, 200f)
         val ring = Paint(Paint.ANTI_ALIAS_FLAG)
         ring.style = Paint.Style.STROKE
         ring.strokeWidth = 7f
@@ -49,6 +68,7 @@ object ClockRenderer {
         c.drawArc(outer, 181f, 178f, false, ring)
         ring.color = DAY
         c.drawArc(outer, 1f, 178f, false, ring)
+        c.restore()
 
         // Anell fi interior (límit de l'esfera)
         p.style = Paint.Style.STROKE
@@ -57,7 +77,8 @@ object ClockRenderer {
         c.drawCircle(200f, 200f, 152f, p)
         p.style = Paint.Style.FILL
 
-        // Números de 24 h (24 a dalt, 12 a baix) i punts per les hores senars
+        // Números de 24 h i punts per les hores senars. Giren amb l'esfera, però cada xifra
+        // es manté dreta perquè es pugui llegir sempre (només canvia la posició).
         val nums = Paint(Paint.ANTI_ALIAS_FLAG)
         nums.color = WHITE
         nums.textSize = 21f
@@ -68,7 +89,7 @@ object ClockRenderer {
         val dot = Paint(Paint.ANTI_ALIAS_FLAG)
         dot.color = WHITE
         for (h in 0 until 24) {
-            val a = Math.toRadians(h * 15.0)
+            val a = Math.toRadians(h * 15.0 + dialRot)
             val x = (200.0 + 170.0 * sin(a)).toFloat()
             val y = (200.0 - 170.0 * cos(a)).toFloat()
             if (h % 2 == 0) {
@@ -129,14 +150,14 @@ object ClockRenderer {
         val dfm = day.fontMetrics
         c.drawText(LocalDate.now().dayOfMonth.toString(), win.centerX(), win.centerY() - (dfm.ascent + dfm.descent) / 2f, day)
 
-        // Textos: zona de l'agulla GMT (ambre) a dalt i la marca a baix
+        // Textos: la marca a dalt (a les 12) i la segona zona horària (ambre) a baix (a les 6)
         val t = Paint(Paint.ANTI_ALIAS_FLAG)
         t.textAlign = Paint.Align.CENTER
         t.typeface = Typeface.create("sans-serif-medium", Typeface.BOLD)
         t.letterSpacing = 0.08f
         t.textSize = 17f
         t.color = AMBER
-        c.drawText(label.uppercase().take(13), 200f, 138f, t)
+        c.drawText(label.uppercase().take(13), 200f, 282f, t)
 
         val brand = Paint(Paint.ANTI_ALIAS_FLAG)
         brand.textAlign = Paint.Align.CENTER
@@ -145,11 +166,11 @@ object ClockRenderer {
         brand.textScaleX = 0.78f   // serif allargada, sobria
         brand.letterSpacing = 0.14f
         brand.color = 0xFFC4C4C9.toInt()
-        c.drawText(BRAND, 200f, 282f, brand)
+        c.drawText(BRAND, 200f, 138f, brand)
 
-        // Agulla GMT (24 h): una volta cada 24 h, apunta als números
-        val z = ZonedDateTime.now(zone)
-        val angle = (z.hour + z.minute / 60f) / 24f * 360f
+        // Agulla GMT (24 h): una volta cada 24 h, marca l'hora LOCAL respecte a l'esfera
+        // fixa invisible (24 a dalt, 12 a baix). Els números, que giren, en donen l'hora de l'altra zona.
+        val angle = (local.hour + local.minute / 60f) / 24f * 360f
         c.save()
         c.rotate(angle, 200f, 200f)
         val line = Paint(Paint.ANTI_ALIAS_FLAG)

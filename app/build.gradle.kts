@@ -15,11 +15,12 @@ android {
         versionName = "1.2"
     }
 
-    // Dues versions de la mateixa app. Cada una genera el seu APK:
+    // Tres versions de la mateixa app. Cada una genera el seu APK:
     //   app-sergi-debug.apk  (la teva; mateix applicationId, s'instal·la a sobre de l'actual)
     //   app-lluis-debug.apk  (per al Lluís; applicationId diferent, no es barreja amb la teva)
-    // Les diferències (festius i textos) són a app/src/lluis/: allò que hi ha allà
-    // substitueix el que hi ha a app/src/main per a la versió del Lluís.
+    //   app-joan-debug.apk   (per al Joan; locals Castelldefels i Cardona)
+    // Les diferències (festius i textos) són a app/src/lluis/ i app/src/joan/: allò que hi ha allà
+    // substitueix el que hi ha a app/src/main per a la versió corresponent.
     flavorDimensions += "persona"
     productFlavors {
         create("sergi") {
@@ -28,6 +29,10 @@ android {
         create("lluis") {
             dimension = "persona"
             applicationIdSuffix = ".lluis"
+        }
+        create("joan") {
+            dimension = "persona"
+            applicationIdSuffix = ".joan"
         }
     }
 

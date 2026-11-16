@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Widgets Joan</string>
+    <string name="holiday_legend">Colors dels festius: vermell = Estat, blau = Catalunya, lila = Barcelona (capital), verd = local (Castelldefels i Cardona). Un * indica data provisional.</string>
+</resources>

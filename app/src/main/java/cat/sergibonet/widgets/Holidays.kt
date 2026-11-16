@@ -7,7 +7,7 @@ import java.time.LocalDate
 /**
  * STATE = estatal, CATALONIA = Catalunya, CAPITAL = Barcelona (capital),
  * LOCAL = festa local. Cada versió té el seu holidays.json (app/src/main/assets
- * per a Sergi, app/src/lluis/assets per al Lluís).
+ * per a Sergi, app/src/lluis/assets per al Lluís, app/src/joan/assets per al Joan).
  */
 enum class Level { STATE, CATALONIA, CAPITAL, LOCAL }
 
